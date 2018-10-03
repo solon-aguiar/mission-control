@@ -16,7 +16,7 @@ module Mission
       @current_stage.stage_name
     end
 
-    def complete?
+    def completed?
       @completed
     end
 
@@ -29,7 +29,7 @@ module Mission
     end
 
     def transition_to!(label)
-      raise ArgumentError.new('Cannot transition a completed plan!') if complete?
+      raise ArgumentError.new('Cannot transition a completed plan!') if completed?
 
       next_stage_name = @current_stage.transitions[label]
       raise ArgumentError.new('Invalid transition') if next_stage_name.nil? || @internal_stages[next_stage_name].nil?

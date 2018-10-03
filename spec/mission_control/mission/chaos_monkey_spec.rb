@@ -1,5 +1,5 @@
 RSpec.describe Mission::ChaosMonkey do
-  context 'chaos_for_mission' do
+  describe 'chaos_for_mission' do
     deterministic_limit = 7
     no_of_stages = 4
     mission_distance = 160

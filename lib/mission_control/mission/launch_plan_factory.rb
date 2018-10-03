@@ -23,6 +23,6 @@ module Mission
     aborted = LaunchStage.new(:aborted, {}, true)
     completed = LaunchStage.new(:completed, {}, true)
 
-    LaunchPlan.new(initial_stage, [initial_stage, disengaging, cross_checking, launching, aborted, completed])
+    LaunchPlan.new(initial_stage, [disengaging, cross_checking, launching, aborted, completed])
   end
 end

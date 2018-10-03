@@ -1,5 +1,5 @@
 RSpec.describe Mission::LaunchPlan do
-  describe 'transition_to!' do
+  describe 'transition_to!(label)' do
     context 'when already completed' do
       it 'raises ArgumentError' do
         stage = Mission::LaunchStage.new(:afterburner, {}, true)
@@ -40,7 +40,7 @@ RSpec.describe Mission::LaunchPlan do
 
         launch_plan.transition_to! :abort
 
-        expect(launch_plan.complete?).to eq(true)
+        expect(launch_plan.completed?).to eq(true)
         expect(launch_plan.aborted?).to eq(true)
         expect(launch_plan.successful?).to eq(false)
         expect(launch_plan.current_stage_name).to eq(:aborted)
@@ -52,7 +52,7 @@ RSpec.describe Mission::LaunchPlan do
 
         launch_plan.transition_to! :proceed
 
-        expect(launch_plan.complete?).to eq(true)
+        expect(launch_plan.completed?).to eq(true)
         expect(launch_plan.aborted?).to eq(false)
         expect(launch_plan.successful?).to eq(true)
         expect(launch_plan.current_stage_name).to eq(:other_stage)
