@@ -39,7 +39,7 @@ module Mission
     private
     def generate_next_occurence(base, existing_occurence, max_val)
       loop do
-        next_random = @random.rand(0...max_val)
+        next_random = @random.rand(1..max_val)
 
         return next_random if base + next_random != existing_occurence
       end
