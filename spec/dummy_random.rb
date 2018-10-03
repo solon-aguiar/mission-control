@@ -5,9 +5,9 @@ class DummyRandom
     @default_max = default_max
   end
 
-  def rand(max = @default_max)
+  def rand(range = 0..@default_max)
     @current_call += 1
 
-    @current_call > @deterministic_limit ? max - 1 : max
+    @current_call > @deterministic_limit ? range.end - 1 : range.end
   end
 end
