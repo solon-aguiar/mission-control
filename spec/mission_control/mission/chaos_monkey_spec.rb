@@ -1,7 +1,7 @@
-RSpec.describe ChaosMonkey do
+RSpec.describe Mission::ChaosMonkey do
   context 'chaos_for_mission' do
     deterministic_limit = 7
-    no_of_stages = 5
+    no_of_stages = 4
     mission_distance = 160
     auto_abort_rate = 3
     auto_explode_rate = 5
