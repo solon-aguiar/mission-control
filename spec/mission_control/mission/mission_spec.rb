@@ -45,7 +45,7 @@ RSpec.describe Mission::Mission do
         mission.transition_launch_plan_to!(:proceed)
 
         expect(mission.launch_plan_transitions).to eq([])
-        expect(mission.launch_plan_state).to be(nil)
+        expect(mission.launch_plan_state).to eq('')
         expect(mission.ready_to_launch?).to be(false)
         expect(mission.launch_plan_aborted?).to be(true)
       end
@@ -58,7 +58,7 @@ RSpec.describe Mission::Mission do
         mission.transition_launch_plan_to!(:proceed)
 
         expect(mission.launch_plan_transitions).to eq([])
-        expect(mission.launch_plan_state).to be(nil)
+        expect(mission.launch_plan_state).to eq('')
         expect(mission.ready_to_launch?).to be(false)
         expect(mission.launch_plan_aborted?).to be(true)
       end
@@ -73,7 +73,7 @@ RSpec.describe Mission::Mission do
         mission.transition_launch_plan_to!(:proceed)
 
         expect(mission.launch_plan_transitions).to eq([])
-        expect(mission.launch_plan_state).to be(nil)
+        expect(mission.launch_plan_state).to eq('')
         expect(mission.ready_to_launch?).to be(false)
         expect(mission.launch_plan_aborted?).to be(true)
       end
@@ -102,7 +102,7 @@ RSpec.describe Mission::Mission do
         mission.transition_launch_plan_to!(:proceed)
 
         expect(mission.launch_plan_transitions).to eq([])
-        expect(mission.launch_plan_state).to be(nil)
+        expect(mission.launch_plan_state).to eq('')
         expect(mission.ready_to_launch?).to be(true)
         expect(mission.launch_plan_aborted?).to be(false)
       end

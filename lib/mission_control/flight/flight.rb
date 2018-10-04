@@ -39,13 +39,13 @@ module Flight
         current_time = Time.now
         total_elapsed = (current_time - start_time)
         interval_elapsed = current_time - previous_time
+        previous_time = current_time
 
         rates = @rocket.calculate_rates_for(total_elapsed)
         @traveled_distance += (rates.speed * interval_elapsed) / @@KM_PER_HOUR_TO_SEC_RATIO
         @burnt_fuel += rates.burn_rate / @@L_PER_MI_TO_SEC_RATIO
         @total_time += interval_elapsed
 
-        previous_time = current_time
         break if @traveled_distance >= @planned_distance
         yield(Stats.new(rates.speed, rates.burn_rate, @traveled_distance, @total_time, calculate_time_left(rates.speed))) if block_given?
 
