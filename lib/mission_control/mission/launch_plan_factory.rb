@@ -1,28 +1,31 @@
-module Mission
-  def default_plan
-    intial_stage = LaunchStage.new(:afterburner, {
+require_relative './launch_stage'
+require_relative './launch_plan'
+
+module LaunchPlanFactory
+  def build_launch_plan
+    initial_stage = Mission::LaunchStage.new(:afterburner, {
       'abort': :aborted,
       'proceed': :disengaging
     })
 
-    disengaging = LaunchStage.new(:disengaging, {
+    disengaging = Mission::LaunchStage.new(:disengaging, {
       'abort': :aborted,
       'proceed': :cross_checking
     })
 
-    cross_checking = LaunchStage.new(:cross_checking, {
+    cross_checking = Mission::LaunchStage.new(:cross_checking, {
       'abort': :aborted,
       'proceed': :launching
     })
 
-    launching = LaunchStage.new(:launching, {
+    launching = Mission::LaunchStage.new(:launching, {
       'abort': :aborted,
       'proceed': :completed
     })
 
-    aborted = LaunchStage.new(:aborted, {}, true)
-    completed = LaunchStage.new(:completed, {}, true)
+    aborted = Mission::LaunchStage.new(:aborted, {}, true)
+    completed = Mission::LaunchStage.new(:completed, {}, true)
 
-    LaunchPlan.new(initial_stage, [disengaging, cross_checking, launching, aborted, completed])
+    Mission::LaunchPlan.new(initial_stage, [disengaging, cross_checking, launching, aborted, completed])
   end
 end

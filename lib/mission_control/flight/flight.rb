@@ -10,8 +10,8 @@ module Flight
     @@KM_PER_HOUR_TO_SEC_RATIO = 60 * 60
     @@L_PER_MI_TO_SEC_RATIO = 60
 
-    def initialize(rocket, planned_distance, sleep_interval, explosion_distance=0)
-      raise ArgumentError.new('Invalid explosion_distance') if explosion_distance >= 0 and explosion_distance > planned_distance
+    def initialize(rocket, planned_distance, sleep_interval=1, explosion_distance=0)
+      raise ArgumentError.new('Invalid explosion_distance') if explosion_distance > 0 and explosion_distance > planned_distance
       @rocket = rocket
 
       @planned_distance = planned_distance
@@ -26,7 +26,7 @@ module Flight
       @finished = false
     end
 
-    def launch!
+    def launch!(&callback)
       start_time = Time.now
       previous_time = start_time
 
@@ -47,7 +47,7 @@ module Flight
 
         previous_time = current_time
         break if @traveled_distance >= @planned_distance
-        yield(Stats.new(rates.speed, rates.burn_rate, @traveled_distance, total_elapsed, calculate_time_left(rates.speed))) if block_given?
+        yield(Stats.new(rates.speed, rates.burn_rate, @traveled_distance, @total_time, calculate_time_left(rates.speed))) if block_given?
 
         sleep(@sleep_interval)
       end
@@ -67,7 +67,7 @@ module Flight
     end
 
     def should_explode
-      @explosion_distance != 0 and @traveled_distance >= @explosion_distance
+      @explosion_distance > 0 and @traveled_distance >= @explosion_distance
     end
   end
 end

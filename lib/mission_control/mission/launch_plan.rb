@@ -16,6 +16,10 @@ module Mission
       @current_stage.stage_name
     end
 
+    def available_transitions
+      @current_stage.transitions.keys
+    end
+
     def completed?
       @completed
     end
