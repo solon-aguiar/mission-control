@@ -5,18 +5,19 @@ module Mission
   class Mission
     include LaunchPlanFactory
 
-    def initialize(name, planned_distance, rocket)
+    def initialize(name, planned_distance, rocket, chaos_monkey)
       @name = name
       @rocket = rocket
       @planned_distance = planned_distance
+      @chaos_monkey = chaos_monkey
       @all_launch_plans = []
     end
 
-    def start_launch_plan!(chaos_monkey_result)
+    def start_launch_plan!
       return if @ready_to_launch
       transition_launch_plan_to!(:abort) if has_valid_current_launch_plan?
 
-      @abort_at, @explode_at = chaos_monkey_result
+      @abort_at, @explode_at = @chaos_monkey.chaos_for_mission
       @current_launch_plan = build_launch_plan
       @current_stage_number = 1
 
