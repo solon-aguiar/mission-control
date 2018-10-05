@@ -14,7 +14,6 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'mission_control'
-require_relative './dummy_random'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

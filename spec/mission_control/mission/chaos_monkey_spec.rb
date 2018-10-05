@@ -1,55 +1,70 @@
 RSpec.describe Mission::ChaosMonkey do
+  let(:no_of_stages) { 4 }
+  let(:mission_distance) { 160 }
+  let(:auto_abort_rate) { 3 }
+  let(:auto_explode_rate) { 5 }
+  let(:random) { double('random') }
+
   describe 'chaos_for_mission' do
     deterministic_limit = 7
-    no_of_stages = 4
-    mission_distance = 160
-    auto_abort_rate = 3
-    auto_explode_rate = 5
 
     it 'generates abort_at at "auto_abort_rate"' do
-      monkey = described_class.new(DummyRandom.new(deterministic_limit), no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)      
+      expect(random).to receive(:rand).exactly(3).times.with(1..auto_abort_rate).and_return(auto_abort_rate)
+      expect(random).to receive(:rand).exactly(2).times.with(1...no_of_stages).and_return(auto_abort_rate)
 
-      aborted_results = []
-      (auto_abort_rate * 2).times do
+      #return 100 to avoid conflict
+      expect(random).to receive(:rand).exactly(1).times.with(1..auto_explode_rate).and_return(100)
+
+      monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
+      for i in (0..auto_abort_rate * 2) do
         chaos_result = monkey.chaos_for_mission
-        aborted_results << chaos_result if chaos_result.abort_at != -1
+        if (i + 1) % auto_abort_rate == 0
+          expect(chaos_result.abort_at).to eq(auto_abort_rate)
+        else
+          expect(chaos_result.abort_at).to eq(-1)
+        end
       end
-
-      expect(aborted_results.size).to eq(2)
     end
 
     it 'generates explode_at at "auto_explode_rate"' do
-      monkey = described_class.new(DummyRandom.new(deterministic_limit), no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
+      expect(random).to receive(:rand).exactly(3).times.with(1..auto_explode_rate).and_return(auto_explode_rate)
+      expect(random).to receive(:rand).exactly(2).times.with(1...mission_distance).and_return(auto_explode_rate)
 
-      exploded_results = []
-      (auto_explode_rate * 2).times do |i|
+      #return 100 to avoid conflict
+      expect(random).to receive(:rand).exactly(1).times.with(1..auto_abort_rate).and_return(100)
+      
+      monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
+      for i in (0..auto_explode_rate * 2) do
         chaos_result = monkey.chaos_for_mission
-        exploded_results << chaos_result if chaos_result.explode_at != -1
+        if (i + 1) % auto_explode_rate == 0
+          expect(chaos_result.explode_at).to eq(auto_explode_rate)
+        else
+          expect(chaos_result.explode_at).to eq(-1)
+        end
       end
-
-      expect(exploded_results.size).to eq(2)
     end
 
     it 'allows either explode_at or abort_at in the same mission' do
-      monkey = described_class.new(DummyRandom.new(deterministic_limit), no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
+      #creating a situation where on mission 15 the chaos monkey avoids having both abort_at and explode_at
 
-      aborted_results = []
-      exploded_results = []
-      (auto_abort_rate * auto_explode_rate).times do |i| #this generates a multiple which we want to avoid
+      expect(random).to receive(:rand).exactly(6).times.with(1..auto_abort_rate).and_return(auto_abort_rate, auto_abort_rate, auto_abort_rate, auto_abort_rate, auto_abort_rate, auto_abort_rate + 1)
+      expect(random).to receive(:rand).exactly(4).times.with(1...no_of_stages).and_return(auto_abort_rate)
+
+      expect(random).to receive(:rand).exactly(4).times.with(1..auto_explode_rate).and_return(auto_explode_rate)
+      expect(random).to receive(:rand).exactly(3).times.with(1...mission_distance).and_return(auto_explode_rate)
+
+      monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
+      for i in (0...auto_explode_rate * auto_abort_rate) do
         chaos_result = monkey.chaos_for_mission
 
-        if chaos_result.explode_at != -1
-          expect(chaos_result.abort_at).to be(-1)
-        elsif chaos_result.abort_at != -1
-          expect(chaos_result.explode_at).to be(-1)
+        if (i + 1) % auto_explode_rate == 0
+          expect(chaos_result.explode_at).to eq(auto_explode_rate)
+          expect(chaos_result.abort_at).to eq(-1)
+        elsif (i + 1) % auto_abort_rate == 0
+          expect(chaos_result.explode_at).to eq(-1)
+          expect(chaos_result.abort_at).to eq(auto_abort_rate)
         end
-
-        exploded_results << chaos_result if chaos_result.explode_at != -1
-        aborted_results << chaos_result if chaos_result.abort_at != -1
       end
-
-      expect(exploded_results.size).to eq(auto_abort_rate)
-      expect(aborted_results.size).to eq(auto_explode_rate + 1) # + 1 because we favor it in the conflict
     end
   end
 end
