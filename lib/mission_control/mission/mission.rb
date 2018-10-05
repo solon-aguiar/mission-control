@@ -5,9 +5,10 @@ module Mission
   class Mission
     include LaunchPlanFactory
 
-    def initialize(name, rocket)
+    def initialize(name, planned_distance, rocket)
       @name = name
       @rocket = rocket
+      @planned_distance = planned_distance
       @all_launch_plans = []
     end
 
@@ -50,10 +51,10 @@ module Mission
       @current_stage_number += 1
     end
 
-    def launch_rocket!(planned_distance, sleep_interval, &callback)
+    def launch_rocket!(sleep_interval, &callback)
       return unless ready_to_launch?
 
-      @flight = Flight::Flight.new(@rocket, planned_distance, sleep_interval, @explode_at)
+      @flight = Flight::Flight.new(@rocket, @planned_distance, sleep_interval, @explode_at)
       @flight.launch!(&callback)
     end
 
