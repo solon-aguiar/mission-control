@@ -5,7 +5,7 @@ RSpec.describe Mission::Mission do
   let(:speed) { 3_600 }
   let(:burn_rate) { 168_240 }
   let(:sleep_interval) { 0 }
-  let(:rocket_rates) { Rocket::SimulatedParams.new(speed, burn_rate) }
+  let(:rocket_rates) { [speed, burn_rate] }
 
   describe 'start_launch_plan!' do
     it 'creates a launch plan' do

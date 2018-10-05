@@ -41,13 +41,13 @@ module Flight
         interval_elapsed = current_time - previous_time
         previous_time = current_time
 
-        rates = @rocket.calculate_rates_for(total_elapsed)
-        @traveled_distance += (rates.speed * interval_elapsed) / @@KM_PER_HOUR_TO_SEC_RATIO
-        @burnt_fuel += rates.burn_rate / @@L_PER_MI_TO_SEC_RATIO
+        speed, burn_rate = @rocket.calculate_rates_for(total_elapsed)
+        @traveled_distance += (speed * interval_elapsed) / @@KM_PER_HOUR_TO_SEC_RATIO
+        @burnt_fuel += burn_rate / @@L_PER_MI_TO_SEC_RATIO
         @total_time += interval_elapsed
 
         break if @traveled_distance >= @planned_distance
-        yield(Stats.new(rates.speed, rates.burn_rate, @traveled_distance, @total_time, calculate_time_left(rates.speed))) if block_given?
+        yield(Stats.new(speed, burn_rate, @traveled_distance, @total_time, calculate_time_left(speed))) if block_given?
 
         sleep(@sleep_interval)
       end

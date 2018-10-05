@@ -4,7 +4,7 @@ RSpec.describe Flight::Flight do
   let(:speed) { 3_600 }
   let(:burn_rate) { 168_240 }
   let(:sleep_interval) { 0 }
-  let(:rocket_rates) { Rocket::SimulatedParams.new(speed, burn_rate) }
+  let(:rocket_rates) { [speed, burn_rate] }
 
   let(:first_block_received_stat) {
     Flight::Stats.new(speed, burn_rate, 1, 1, 0.03333)

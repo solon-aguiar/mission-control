@@ -6,7 +6,7 @@ require_relative 'mission_control/mission/launch_stage'
 require_relative 'mission_control/mission/mission'
 
 require_relative 'mission_control/rocket/rocket'
-require_relative 'mission_control/rocket/simulated_params'
+require_relative 'mission_control/rocket/engine'
 
 # Basic class
 class MissionControl
