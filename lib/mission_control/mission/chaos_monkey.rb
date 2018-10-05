@@ -1,5 +1,3 @@
-require_relative './chaos_result'
-
 module Mission
   class ChaosMonkey
     def initialize(random_generator, number_stages, flight_distance, auto_abort_rate, auto_explode_rate)
@@ -25,15 +23,15 @@ module Mission
         @current_auto_abort_number = 0
         @next_auto_abort = generate_next_occurence(@current_auto_explode_number, @next_auto_explode, @auto_abort_rate)
 
-        return ChaosResult.new(@random.rand(1...@valid_abort_options))
+        return @random.rand(1...@valid_abort_options),-1
       elsif should_explode?
         @current_auto_explode_number = 0
         @next_auto_explode = generate_next_occurence(@current_auto_abort_number, @next_auto_abort, @auto_explode_rate)
 
-        return ChaosResult.new(-1, @random.rand(1...@valid_explostion_distance))
+        return -1, @random.rand(1...@valid_explostion_distance)
       end
       
-      return ChaosResult.new
+      return -1,-1
     end
 
     private

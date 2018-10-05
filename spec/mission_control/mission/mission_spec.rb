@@ -12,7 +12,7 @@ RSpec.describe Mission::Mission do
       mission = described_class.new(name, rocket)
       expect(mission.launch_plan_transitions).to eq([])
 
-      mission.start_launch_plan! (Mission::ChaosResult.new)
+      mission.start_launch_plan! ([-1,-1])
 
       expect(mission.launch_plan_transitions).to eq([:abort, :proceed])
       expect(mission.launch_plan_state).to eq(:afterburner)
@@ -23,8 +23,8 @@ RSpec.describe Mission::Mission do
     it 'adds the plan to the list of plans for the mission' do
       mission = described_class.new(name, rocket)
 
-      mission.start_launch_plan! (Mission::ChaosResult.new)
-      mission.start_launch_plan! (Mission::ChaosResult.new)
+      mission.start_launch_plan! ([-1,-1])
+      mission.start_launch_plan! ([-1,-1])
 
       expect(mission.summary.all_plans.size).to eq(2)
       expect(mission.summary.all_plans.first.aborted?).to eq(true)
@@ -41,7 +41,7 @@ RSpec.describe Mission::Mission do
       it 'fails on the first stage' do
         mission = described_class.new(name, rocket)
 
-        mission.start_launch_plan! (Mission::ChaosResult.new(1))
+        mission.start_launch_plan! ([1,-1])
         mission.transition_launch_plan_to!(:proceed)
 
         expect(mission.launch_plan_transitions).to eq([])
@@ -53,7 +53,7 @@ RSpec.describe Mission::Mission do
       it 'fails on a mid stage' do
         mission = described_class.new(name, rocket)
 
-        mission.start_launch_plan! (Mission::ChaosResult.new(2))
+        mission.start_launch_plan! ([2,-1])
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
 
@@ -66,7 +66,7 @@ RSpec.describe Mission::Mission do
       it 'fails on the last stage' do
         mission = described_class.new(name, rocket)
 
-        mission.start_launch_plan! (Mission::ChaosResult.new(4))
+        mission.start_launch_plan! ([4,-1])
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
@@ -83,7 +83,7 @@ RSpec.describe Mission::Mission do
       it 'transitions to the next state' do
         mission = described_class.new(name, rocket)
 
-        mission.start_launch_plan! Mission::ChaosResult.new
+        mission.start_launch_plan! ([-1,-1])
         mission.transition_launch_plan_to!(:proceed)
 
         expect(mission.launch_plan_transitions).to eq([:abort, :proceed])
@@ -95,7 +95,7 @@ RSpec.describe Mission::Mission do
       it 'finishes the launch plan' do
         mission = described_class.new(name, rocket)
 
-        mission.start_launch_plan! Mission::ChaosResult.new
+        mission.start_launch_plan! ([-1,-1])
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
@@ -113,7 +113,7 @@ RSpec.describe Mission::Mission do
     context 'when not ready' do
       it 'does not do anything' do
         mission = described_class.new(name, rocket)
-        mission.start_launch_plan! Mission::ChaosResult.new
+        mission.start_launch_plan! ([-1,-1])
 
         mission.launch_rocket!(desired_distance, sleep_interval)
 
@@ -130,7 +130,7 @@ RSpec.describe Mission::Mission do
         expect(rocket).to receive(:calculate_rates_for).exactly(desired_distance - 1).times.and_return(rocket_rates)
 
         mission = described_class.new(name, rocket)
-        mission.start_launch_plan! Mission::ChaosResult.new(-1, 2)
+        mission.start_launch_plan! ([-1,2])
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
@@ -149,7 +149,7 @@ RSpec.describe Mission::Mission do
         expect(rocket).to receive(:calculate_rates_for).exactly(desired_distance).times.and_return(rocket_rates)
 
         mission = described_class.new(name, rocket)
-        mission.start_launch_plan! Mission::ChaosResult.new
+        mission.start_launch_plan! ([-1,-1])
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)

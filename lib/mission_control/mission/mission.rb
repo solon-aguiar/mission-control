@@ -15,7 +15,7 @@ module Mission
       return if @ready_to_launch
       transition_launch_plan_to!(:abort) if has_valid_current_launch_plan?
 
-      @chaos_monkey_result = chaos_monkey_result
+      @abort_at, @explode_at = chaos_monkey_result
       @current_launch_plan = build_launch_plan
       @current_stage_number = 1
 
@@ -53,7 +53,7 @@ module Mission
     def launch_rocket!(planned_distance, sleep_interval, &callback)
       return unless ready_to_launch?
 
-      @flight = Flight::Flight.new(@rocket, planned_distance, sleep_interval, @chaos_monkey_result.explode_at)
+      @flight = Flight::Flight.new(@rocket, planned_distance, sleep_interval, @explode_at)
       @flight.launch!(&callback)
     end
 
@@ -67,7 +67,7 @@ module Mission
 
     private
     def should_auto_abort?
-      @chaos_monkey_result.abort_at != -1 and @current_stage_number == @chaos_monkey_result.abort_at
+      @current_stage_number == @abort_at
     end
 
     def has_valid_current_launch_plan?

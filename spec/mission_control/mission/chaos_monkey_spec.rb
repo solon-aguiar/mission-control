@@ -17,11 +17,11 @@ RSpec.describe Mission::ChaosMonkey do
 
       monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
       for i in (0..auto_abort_rate * 2) do
-        chaos_result = monkey.chaos_for_mission
+        abort_at, explode_at = monkey.chaos_for_mission
         if (i + 1) % auto_abort_rate == 0
-          expect(chaos_result.abort_at).to eq(auto_abort_rate)
+          expect(abort_at).to eq(auto_abort_rate)
         else
-          expect(chaos_result.abort_at).to eq(-1)
+          expect(abort_at).to eq(-1)
         end
       end
     end
@@ -35,18 +35,17 @@ RSpec.describe Mission::ChaosMonkey do
       
       monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
       for i in (0..auto_explode_rate * 2) do
-        chaos_result = monkey.chaos_for_mission
+        abort_at, explode_at = monkey.chaos_for_mission
         if (i + 1) % auto_explode_rate == 0
-          expect(chaos_result.explode_at).to eq(auto_explode_rate)
+          expect(explode_at).to eq(auto_explode_rate)
         else
-          expect(chaos_result.explode_at).to eq(-1)
+          expect(explode_at).to eq(-1)
         end
       end
     end
 
     it 'allows either explode_at or abort_at in the same mission' do
-      #creating a situation where on mission 15 the chaos monkey avoids having both abort_at and explode_at
-
+      #creating a situation where on mission 15 the chaos monkey avoids having both abort_at and explode_ats
       expect(random).to receive(:rand).exactly(6).times.with(1..auto_abort_rate).and_return(auto_abort_rate, auto_abort_rate, auto_abort_rate, auto_abort_rate, auto_abort_rate, auto_abort_rate + 1)
       expect(random).to receive(:rand).exactly(4).times.with(1...no_of_stages).and_return(auto_abort_rate)
 
@@ -55,14 +54,14 @@ RSpec.describe Mission::ChaosMonkey do
 
       monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
       for i in (0...auto_explode_rate * auto_abort_rate) do
-        chaos_result = monkey.chaos_for_mission
+        abort_at, explode_at = monkey.chaos_for_mission
 
         if (i + 1) % auto_explode_rate == 0
-          expect(chaos_result.explode_at).to eq(auto_explode_rate)
-          expect(chaos_result.abort_at).to eq(-1)
+          expect(explode_at).to eq(auto_explode_rate)
+          expect(abort_at).to eq(-1)
         elsif (i + 1) % auto_abort_rate == 0
-          expect(chaos_result.explode_at).to eq(-1)
-          expect(chaos_result.abort_at).to eq(auto_abort_rate)
+          expect(explode_at).to eq(-1)
+          expect(abort_at).to eq(auto_abort_rate)
         end
       end
     end
