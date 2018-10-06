@@ -1,0 +1,10 @@
+module Config
+  MISSION_DISTANCE = 160.freeze
+  ENGINE_AVERAGE_SPEED = 1500.freeze
+  ROCKET_AVERAGE_BURN_RATE = 168_240.freeze
+  FUEL_CAPACITY = 1_514_100.freeze
+  PAYLOAD_CAPACITY = 50_000.freeze
+  MISISON_STAGES = 4.freeze
+  AUTO_ABORT_RATE = 3.freeze
+  AUTO_EXPLODE_RATE = 5.freeze
+end
