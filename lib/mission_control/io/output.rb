@@ -1,4 +1,4 @@
-module MissionControl::Output
+module IO::Output
   def self.write(s)
     print s
   end

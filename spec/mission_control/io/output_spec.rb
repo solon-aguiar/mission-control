@@ -1,4 +1,4 @@
-RSpec.describe MissionControl::Output do
+RSpec.describe IO::Output do
   let (:test_message) { 'test message string' }
 
   describe 'write' do
