@@ -2,7 +2,7 @@ require_relative './launch_stage'
 require_relative './launch_plan'
 
 module LaunchPlanFactory
-  def build_launch_plan
+  def self.build_launch_plan
     initial_stage = Mission::LaunchStage.new(:afterburner, {
       'abort': :aborted,
       'proceed': :disengaging

@@ -3,8 +3,6 @@ require_relative './summary'
 
 module Mission
   class Mission
-    include LaunchPlanFactory
-
     def initialize(name, planned_distance, rocket, chaos_monkey)
       @name = name
       @rocket = rocket
@@ -18,7 +16,7 @@ module Mission
       transition_launch_plan_to!(:abort) if has_valid_current_launch_plan?
 
       @abort_at, @explode_at = @chaos_monkey.chaos_for_mission
-      @current_launch_plan = build_launch_plan
+      @current_launch_plan = LaunchPlanFactory.build_launch_plan
       @current_stage_number = 1
 
       @all_launch_plans << @current_launch_plan
