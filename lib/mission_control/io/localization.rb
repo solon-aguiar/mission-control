@@ -61,4 +61,20 @@ class Localization
 
       lang.has_key?(key) ? lang[key] % args : nil
     end
+
+  def format_integer(number)
+    number.to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
+  end
+
+  def format_float(number, decimal_places=2)
+    "%.#{decimal_places}f" % number
+  end
+
+  def format_time(milliseconds)
+    secs, milisecs = milliseconds.divmod(1000)
+    mins, secs = secs.divmod(60)
+    hours, mins = mins.divmod(60)
+
+    "#{hours}:#{[mins,secs].map { |e| e.to_s.rjust(2,'0') }.join(':')}"
+  end
 end

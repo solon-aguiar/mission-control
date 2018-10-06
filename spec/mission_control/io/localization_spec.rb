@@ -46,4 +46,43 @@ RSpec.describe Localization do
       end
     end
   end
+
+  describe 'format_integer' do
+    it 'adds \, on thousands' do
+      localization = described_class.new(locale)
+
+      expect(localization.format_integer(0)).to eq('0')
+      expect(localization.format_integer(10)).to eq('10')
+      expect(localization.format_integer(100)).to eq('100')
+      expect(localization.format_integer(100)).to eq('100')
+      expect(localization.format_integer(1000)).to eq('1,000')
+      expect(localization.format_integer(151_416)).to eq('151,416')
+      expect(localization.format_integer(1_350)).to eq('1,350')
+    end
+  end
+
+  describe 'format_float' do
+    it 'rounds to 2 decimal places' do
+      localization = described_class.new(locale)
+
+      expect(localization.format_float(0)).to eq('0.00')
+      expect(localization.format_float(0.1)).to eq('0.10')
+      expect(localization.format_float(0.12)).to eq('0.12')
+      expect(localization.format_float(137.3431)).to eq('137.34')
+    end
+  end
+
+  describe 'format_time' do
+    it 'rounds to 2 decimal places' do
+      localization = described_class.new(locale)
+
+      expect(localization.format_time(0)).to eq('0:00:00')
+      expect(localization.format_time(1000)).to eq('0:00:01')
+      expect(localization.format_time(10000)).to eq('0:00:10')
+      expect(localization.format_time(60000)).to eq('0:01:00')
+      expect(localization.format_time(600000)).to eq('0:10:00')
+      expect(localization.format_time(3600000)).to eq('1:00:00')
+      expect(localization.format_time(3661000)).to eq('1:01:01')
+    end
+  end
 end
