@@ -1,6 +1,10 @@
 class Localization
   @@TRANSLATIONS = {
       :en_US => {
+        # greetings
+        :welcome => 'Welcome to Mission Control!',
+        :bye => 'Bye bye! Hope you enjoyed it!',
+
         # responses
         :proceed => 'Y',
         :abort => 'n',
@@ -10,13 +14,15 @@ class Localization
         :new_mission_name => 'What is the name of this mission?',
         :want_to_proceed => 'Would you like to proceed?',
         :want_to_retry => 'Would you like to retry?',
+        :invalid_input => 'Please provide a valid value!',
+        :invalid_name => 'Please provide a non-empty mission name!',
 
         # launch plan stages
         :afterburner => 'Engage afterburner?',
         :disengaging => 'Release support structures?',
         :cross_checking => 'Perform cross-checks?',
         :launching => 'Launch?',
-        :rocket_launched => 'Launched!',
+        :rocket_launched => 'Launched! Please wait for updates...',
 
         # mission plan
         :mission_plan => 'Mission plan:',
@@ -43,9 +49,10 @@ class Localization
         :elapsed_time => "Elapsed time: %s",
         :time_left => "Time to destination: %s",
 
-        # fatalities
+        # final messages
         :aborted => 'Mission aborted!',
-        :rocket_exploded => 'Oops! Rocket exploded!'
+        :rocket_exploded => 'Oops! Rocket exploded!',
+        :mission_completed => 'Mission completed!'
       }
     }
     attr_accessor :locale
