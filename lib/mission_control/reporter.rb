@@ -67,7 +67,7 @@ class Reporter
       explosions_val
     )
 
-    total_fuel_val = @localization.format_integer(calculate_total(all_summaries, :fuel_burnt))
+    total_fuel_val = @localization.format_integer(calculate_total(all_summaries, :fuel_burnt).to_i)
     total_fuel_burnt = @localization.get_localized_string(
       :total_fuel_burnt,
       total_fuel_val
@@ -85,13 +85,13 @@ class Reporter
   def build_mission_status(flight_status)
     title = @localization.get_localized_string(:mission_status)
 
-    burn_val = @localization.format_integer(flight_status.burn_rate)
+    burn_val = @localization.format_integer(flight_status.burn_rate.to_i)
     fuel_burn_rate = @localization.get_localized_string(
       :fuel_burn_rate,
       burn_val
     )
 
-    speed_val = @localization.format_integer(flight_status.speed)
+    speed_val = @localization.format_integer(flight_status.speed.to_i)
     current_speed = @localization.get_localized_string(
       :current_speed,
       speed_val

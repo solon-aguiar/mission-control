@@ -25,7 +25,7 @@ RSpec.describe Reporter do
   describe 'build_missions_summary' do
     let(:complete_launch_plan) { double('complete_launch_plan', :aborted? => false) }
     let(:incomplete_launch_plan) { double('complete_launch_plan', :aborted? => true) }
-    let(:complete_flight_summary) { Flight::Summary.new(160, 10_000_000, five_minutes_forty_seconds) }
+    let(:complete_flight_summary) { Flight::Summary.new(160, 10_000_000.01, five_minutes_forty_seconds) }
     let(:incomplete_flight_summary) { Flight::Summary.new(100, 3_500, thirty_seconds) }
     let(:complete_flight) { double('complete_flight', :exploded? => false, :summary => complete_flight_summary) }
     let(:incomplete_flight) { double('incomplete_flight', :exploded? => true, :summary => incomplete_flight_summary) }
@@ -101,7 +101,7 @@ RSpec.describe Reporter do
   describe 'build_mission_status' do
     it 'formats all the fields' do
       reporter = described_class.new(localization)
-      flight_status = Flight::Stats.new(1_350, 151_416, 12.51, thirty_seconds, five_minutes_forty_seconds)
+      flight_status = Flight::Stats.new(1_350.312, 151_416.187, 12.51, thirty_seconds, five_minutes_forty_seconds)
 
       status_string = reporter.build_mission_status(flight_status)
       expect(status_string).to eq(
