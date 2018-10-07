@@ -1,16 +1,16 @@
 RSpec.describe Flight::Flight do
   let(:rocket) { double('rocket') }
-  let(:desired_distance) { 3 }
+  let(:desired_distance) { 3.0 }
   let(:speed) { 3_600 }
   let(:burn_rate) { 168_240 }
   let(:sleep_interval) { 0 }
   let(:rocket_rates) { [speed, burn_rate] }
 
   let(:first_block_received_stat) {
-    Flight::Stats.new(speed, burn_rate, 1, 1, 0.03333)
+    Flight::Stats.new(speed, burn_rate, 1, 1000, 2000)
   }
   let(:second_block_received_stat) {
-    Flight::Stats.new(speed, burn_rate, 2, 2, 0.01666)
+    Flight::Stats.new(speed, burn_rate, 2, 2000, 1000)
   }
 
   describe 'launch!' do
@@ -69,8 +69,8 @@ RSpec.describe Flight::Flight do
           flight.launch!
 
           expect(flight.summary.travelled_distance).to be(desired_distance - 1)
-          expect(flight.summary.total_time).to be(2)
-          expect(flight.summary.fuel_burnt).to be(burn_rate/60 * 2)
+          expect(flight.summary.total_time).to be(2000.0)
+          expect(flight.summary.fuel_burnt).to be(burn_rate.to_f/60 * 2)
       end
     end
 
@@ -83,8 +83,8 @@ RSpec.describe Flight::Flight do
         flight.launch!
 
         expect(flight.summary.travelled_distance).to be(desired_distance)
-        expect(flight.summary.total_time).to be(3)
-        expect(flight.summary.fuel_burnt).to be(burn_rate/60 * 3)
+        expect(flight.summary.total_time).to be(3000.0)
+        expect(flight.summary.fuel_burnt).to be(burn_rate.to_f/60 * 3)
       end
     end
   end

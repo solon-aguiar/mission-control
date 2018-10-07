@@ -1,14 +1,12 @@
 require_relative './stats'
 require_relative './summary'
+require_relative '../unit'
 
 module Flight
   class Flight
     attr_reader :finished, :exploded
     alias :finished? :finished
     alias :exploded? :exploded
-
-    @@KM_PER_HOUR_TO_SEC_RATIO = 60 * 60
-    @@L_PER_MI_TO_SEC_RATIO = 60
 
     def initialize(rocket, planned_distance, sleep_interval=1, explosion_distance=0)
       raise ArgumentError.new('Invalid explosion_distance') if explosion_distance > 0 and explosion_distance > planned_distance
@@ -37,17 +35,17 @@ module Flight
         end
 
         current_time = Time.now
-        total_elapsed = (current_time - start_time)
         interval_elapsed = current_time - previous_time
         previous_time = current_time
 
-        speed, burn_rate = @rocket.calculate_rates_for(total_elapsed)
-        @traveled_distance += (speed * interval_elapsed) / @@KM_PER_HOUR_TO_SEC_RATIO
-        @burnt_fuel += burn_rate / @@L_PER_MI_TO_SEC_RATIO
         @total_time += interval_elapsed
 
+        speed, burn_rate = @rocket.calculate_rates_for(@total_time)
+        @traveled_distance += Unit.km_per_hour_to_km_per_se(speed * interval_elapsed)
+        @burnt_fuel += Unit.liters_per_minute_to_liters_per_sec(burn_rate)
+
         break if @traveled_distance >= @planned_distance
-        yield(Stats.new(speed, burn_rate, @traveled_distance, @total_time, calculate_time_left(speed))) if block_given?
+        yield(Stats.new(speed, burn_rate, @traveled_distance, Unit.se_to_ms(@total_time), Unit.se_to_ms(calculate_time_left(speed)))) if block_given?
 
         sleep(@sleep_interval)
       end
@@ -58,12 +56,12 @@ module Flight
     def summary
       raise ArgumentError.new('No summary for incomplete flight') unless @finished
 
-      Summary.new(@traveled_distance, @burnt_fuel, @total_time)
+      Summary.new(@traveled_distance, @burnt_fuel, Unit.se_to_ms(@total_time))
     end
 
     private
     def calculate_time_left(speed)
-      (60 * (@planned_distance - @traveled_distance)).to_f / speed
+      (@planned_distance - @traveled_distance).to_f / Unit.km_per_hour_to_km_per_se(speed)
     end
 
     def should_explode
