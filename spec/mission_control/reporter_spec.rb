@@ -20,6 +20,22 @@ RSpec.describe Reporter do
 }
       )
     end
+
+    it 'justifies the smaller seeds correctly' do
+      reporter = described_class.new(localization)
+
+      plan_string = reporter.build_mission_plan(2)
+      expect(plan_string).to eq(
+        %{Mission plan:
+  Travel distance:  160.0 km
+  Payload capacity: 50,000 kg
+  Fuel capacity:    1,514,100 liters
+  Burn rate:        168,240 liters/min
+  Average speed:    1,500 km/h
+  Random seed:      2
+}
+      )
+    end
   end
 
   describe 'build_missions_summary' do

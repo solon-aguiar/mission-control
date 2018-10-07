@@ -41,7 +41,7 @@ class Reporter
     seed_str = @localization.format_integer(seed_val)
     seed = @localization.get_localized_string(
       :random_seed,
-      seed_str.rjust(7, ' ')
+      "     #{seed_str}"
     )
 
     create_multiline(title, travel_distance, capacity, fuel_capacity, burn_rate, average_speed, seed)
