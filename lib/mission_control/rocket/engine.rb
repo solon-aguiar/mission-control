@@ -2,7 +2,7 @@ module Rocket
   class Engine
     attr_reader :avg_speed
 
-    def initialize(avg_speed, random_generator, stddev = 150)
+    def initialize(avg_speed, random_generator, stddev = 100)
       @rand_helper = random_generator
       @avg_speed = avg_speed
       @stddev = stddev

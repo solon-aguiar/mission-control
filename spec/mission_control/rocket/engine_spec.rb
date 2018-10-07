@@ -22,8 +22,8 @@ RSpec.describe Rocket::Engine do
         engine = described_class.new(avg_speed, random)
         expect(engine.speed_at(4)).to eq(1500)
         expect(engine.speed_at(5)).to eq(1500)
-        expect(engine.speed_at(6)).to eq(1555.7061116438274)
-        expect(engine.speed_at(7)).to eq(1540.4728591790551)
+        expect(engine.speed_at(6)).to eq(1537.1374077625514)
+        expect(engine.speed_at(7)).to eq(1526.98190611937)
       end
     end
   end
