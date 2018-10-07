@@ -11,8 +11,8 @@ module Mission
       @current_auto_abort_number = 0
       @current_auto_explode_number = 0
 
-      @next_auto_abort = generate_next_occurence(@current_auto_explode_number, -1, auto_abort_rate)
-      @next_auto_explode = generate_next_occurence(@current_auto_abort_number, @next_auto_abort, auto_explode_rate)
+      @next_auto_abort = generate_next_occurence(@current_auto_explode_number, -1, auto_abort_rate, auto_abort_rate)
+      @next_auto_explode = generate_next_occurence(@current_auto_abort_number, @next_auto_abort, auto_explode_rate, auto_explode_rate)
     end
 
     def chaos_for_mission
@@ -20,13 +20,14 @@ module Mission
       @current_auto_explode_number += 1
 
       if should_abort?
+        @next_auto_abort = generate_next_occurence(@current_auto_explode_number, @next_auto_explode, @auto_abort_rate, @current_auto_abort_number)
         @current_auto_abort_number = 0
-        @next_auto_abort = generate_next_occurence(@current_auto_explode_number, @next_auto_explode, @auto_abort_rate)
 
         return @random.rand(1...@valid_abort_options),-1
       elsif should_explode?
+        
+        @next_auto_explode = generate_next_occurence(@current_auto_abort_number, @next_auto_abort, @auto_explode_rate, @current_auto_explode_number)
         @current_auto_explode_number = 0
-        @next_auto_explode = generate_next_occurence(@current_auto_abort_number, @next_auto_abort, @auto_explode_rate)
 
         return -1, @random.rand(1...@valid_explostion_distance)
       end
@@ -35,11 +36,11 @@ module Mission
     end
 
     private
-    def generate_next_occurence(base, existing_occurence, max_val)
+    def generate_next_occurence(next_event, existing_occurence, max_val, base)
       loop do
-        next_random = @random.rand(1..max_val)
+        next_random = @random.rand(1..max_val) + (max_val - base)
 
-        return next_random if base + next_random != existing_occurence
+        return next_random if next_event + next_random != existing_occurence
       end
     end
 

@@ -65,5 +65,69 @@ RSpec.describe Mission::ChaosMonkey do
         end
       end
     end
+
+    it 'does not breach the auto_abort_rate when creating chaos' do
+      expect(random).to receive(:rand).exactly(3).times.with(1..auto_abort_rate).and_return(1, 1, 3)
+      expect(random).to receive(:rand).exactly(2).times.with(1...no_of_stages).and_return(auto_abort_rate)
+
+      #return 100 to avoid conflict
+      expect(random).to receive(:rand).exactly(1).times.with(1..auto_explode_rate).and_return(100)
+
+      monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
+
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(auto_abort_rate)
+      expect(explode_at).to eq(-1)
+
+      #now since we failed at the first one, we can't fail again at #2. It has to be the 4th mission now
+      #otherwise we'd break the contract of failing at auto_abort_rate.
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(-1)
+      expect(explode_at).to eq(-1)
+
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(-1)
+      expect(explode_at).to eq(-1)
+
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(auto_abort_rate)
+      expect(explode_at).to eq(-1)
+    end
+
+    it 'does not breach the auto_explode_rate when creating chaos' do
+      expect(random).to receive(:rand).exactly(3).times.with(1..auto_explode_rate).and_return(1, 1, 5)
+      expect(random).to receive(:rand).exactly(2).times.with(1...mission_distance).and_return(auto_explode_rate)
+
+      #return 100 to avoid conflict
+      expect(random).to receive(:rand).exactly(1).times.with(1..auto_abort_rate).and_return(100)
+
+      monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
+
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(-1)
+      expect(explode_at).to eq(auto_explode_rate)
+
+      #now since we failed at the first one, we can't fail again at #2. It has to be the 6th mission now
+      #otherwise we'd break the contract of failing at auto_abort_rate.
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(-1)
+      expect(explode_at).to eq(-1)
+
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(-1)
+      expect(explode_at).to eq(-1)
+
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(-1)
+      expect(explode_at).to eq(-1)
+
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(-1)
+      expect(explode_at).to eq(-1)
+
+      abort_at, explode_at = monkey.chaos_for_mission
+      expect(abort_at).to eq(-1)
+      expect(explode_at).to eq(auto_explode_rate)
+    end
   end
 end
