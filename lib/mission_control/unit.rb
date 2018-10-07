@@ -1,6 +1,6 @@
 module Unit
   def self.ms_to_se(ms)
-    ms.to_f/1000
+    ms.to_f / 1000
   end
 
   def self.se_to_ms(se)

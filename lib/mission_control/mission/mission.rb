@@ -3,6 +3,8 @@ require_relative './summary'
 
 module Mission
   class Mission
+    attr_reader :name
+
     def initialize(name, planned_distance, rocket, chaos_monkey)
       @name = name
       @rocket = rocket
