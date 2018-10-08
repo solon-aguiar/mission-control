@@ -1,5 +1,7 @@
 module Mission
   class ChaosMonkey
+    @@NO_ERROR = -1
+
     def initialize(random_generator, number_stages, flight_distance, auto_abort_rate, auto_explode_rate)
       @random = random_generator
 
@@ -23,19 +25,20 @@ module Mission
         @next_auto_abort = generate_next_occurence(@current_auto_explode_number, @next_auto_explode, @auto_abort_rate, @current_auto_abort_number)
         @current_auto_abort_number = 0
 
-        return @random.rand(1...@valid_abort_options),-1
+        return @random.rand(1...@valid_abort_options), @@NO_ERROR
       elsif should_explode?
         
         @next_auto_explode = generate_next_occurence(@current_auto_abort_number, @next_auto_abort, @auto_explode_rate, @current_auto_explode_number)
         @current_auto_explode_number = 0
 
-        return -1, @random.rand(1...@valid_explostion_distance)
+        return @@NO_ERROR, @random.rand(1...@valid_explostion_distance)
       end
       
-      return -1,-1
+      return @@NO_ERROR, @@NO_ERROR
     end
 
     private
+
     def generate_next_occurence(next_event, existing_occurence, max_val, base)
       loop do
         next_random = @random.rand(1..max_val) + (max_val - base)

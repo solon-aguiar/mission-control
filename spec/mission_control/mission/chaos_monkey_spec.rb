@@ -6,14 +6,12 @@ RSpec.describe Mission::ChaosMonkey do
   let(:random) { double('random') }
 
   describe 'chaos_for_mission' do
-    deterministic_limit = 7
-
     it 'generates abort_at at "auto_abort_rate"' do
       expect(random).to receive(:rand).exactly(3).times.with(1..auto_abort_rate).and_return(auto_abort_rate)
-      expect(random).to receive(:rand).exactly(2).times.with(1...no_of_stages).and_return(auto_abort_rate)
+      expect(random).to receive(:rand).twice.with(1...no_of_stages).and_return(auto_abort_rate)
 
       #return 100 to avoid conflict
-      expect(random).to receive(:rand).exactly(1).times.with(1..auto_explode_rate).and_return(100)
+      expect(random).to receive(:rand).once.with(1..auto_explode_rate).and_return(100)
 
       monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
       for i in (0..auto_abort_rate * 2) do
@@ -28,10 +26,10 @@ RSpec.describe Mission::ChaosMonkey do
 
     it 'generates explode_at at "auto_explode_rate"' do
       expect(random).to receive(:rand).exactly(3).times.with(1..auto_explode_rate).and_return(auto_explode_rate)
-      expect(random).to receive(:rand).exactly(2).times.with(1...mission_distance).and_return(auto_explode_rate)
+      expect(random).to receive(:rand).twice.with(1...mission_distance).and_return(auto_explode_rate)
 
       #return 100 to avoid conflict
-      expect(random).to receive(:rand).exactly(1).times.with(1..auto_abort_rate).and_return(100)
+      expect(random).to receive(:rand).once.with(1..auto_abort_rate).and_return(100)
       
       monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
       for i in (0..auto_explode_rate * 2) do
@@ -68,10 +66,10 @@ RSpec.describe Mission::ChaosMonkey do
 
     it 'does not breach the auto_abort_rate when creating chaos' do
       expect(random).to receive(:rand).exactly(3).times.with(1..auto_abort_rate).and_return(1, 1, 3)
-      expect(random).to receive(:rand).exactly(2).times.with(1...no_of_stages).and_return(auto_abort_rate)
+      expect(random).to receive(:rand).twice.with(1...no_of_stages).and_return(auto_abort_rate)
 
       #return 100 to avoid conflict
-      expect(random).to receive(:rand).exactly(1).times.with(1..auto_explode_rate).and_return(100)
+      expect(random).to receive(:rand).once.with(1..auto_explode_rate).and_return(100)
 
       monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
 
@@ -96,10 +94,10 @@ RSpec.describe Mission::ChaosMonkey do
 
     it 'does not breach the auto_explode_rate when creating chaos' do
       expect(random).to receive(:rand).exactly(3).times.with(1..auto_explode_rate).and_return(1, 1, 5)
-      expect(random).to receive(:rand).exactly(2).times.with(1...mission_distance).and_return(auto_explode_rate)
+      expect(random).to receive(:rand).twice.with(1...mission_distance).and_return(auto_explode_rate)
 
       #return 100 to avoid conflict
-      expect(random).to receive(:rand).exactly(1).times.with(1..auto_abort_rate).and_return(100)
+      expect(random).to receive(:rand).once.with(1..auto_abort_rate).and_return(100)
 
       monkey = described_class.new(random, no_of_stages, mission_distance, auto_abort_rate, auto_explode_rate)
 
