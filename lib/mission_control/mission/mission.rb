@@ -68,6 +68,7 @@ module Mission
     end
 
     private
+    
     def should_auto_abort?
       @current_stage_number == @abort_at
     end

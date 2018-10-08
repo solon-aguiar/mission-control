@@ -17,15 +17,16 @@ module Rocket
     end
 
     private
+    
     def sustained_speed
       if @valid
         @valid = false
-        return @next
+        @next
       else
         @valid = true
         x, y = gaussian
         @next = y
-        return x
+        x
       end
     end
 
@@ -35,7 +36,7 @@ module Rocket
       scale = @stddev * rho
       x = @avg_speed + scale * Math.cos(theta)
       y = @avg_speed + scale * Math.sin(theta)
-      return x, y
+      [x, y]
     end
 
     #Based on quadractic acceleration
@@ -44,7 +45,7 @@ module Rocket
     end
 
     def acceleration_speed_at(elapsed_time)
-      (elapsed_time * 10) ** 2
+      (elapsed_time * 10)**2
     end
   end
 end

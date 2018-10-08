@@ -5,13 +5,8 @@ RSpec.describe Flight::Flight do
   let(:burn_rate) { 168_240 }
   let(:sleep_interval) { 0 }
   let(:rocket_rates) { [speed, burn_rate] }
-
-  let(:first_block_received_stat) {
-    Flight::Stats.new(speed, burn_rate, 1, 1000, 2000)
-  }
-  let(:second_block_received_stat) {
-    Flight::Stats.new(speed, burn_rate, 2, 2000, 1000)
-  }
+  let(:first_block_received_stat) { Flight::Stats.new(speed, burn_rate, 1, 1000, 2000) }
+  let(:second_block_received_stat) { Flight::Stats.new(speed, burn_rate, 2, 2000, 1000) }
 
   describe 'launch!' do
     context 'when a block is provided' do

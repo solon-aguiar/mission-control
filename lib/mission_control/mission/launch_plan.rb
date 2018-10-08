@@ -39,7 +39,7 @@ module Mission
       raise ArgumentError.new('Invalid transition') if next_stage_name.nil? || @internal_stages[next_stage_name].nil?
 
       @current_stage = @internal_stages[next_stage_name]
-      @completed = @current_stage.is_final or current_stage_name == :aborted
+      @completed = @current_stage.is_final || current_stage_name == :aborted
     end
   end
 end

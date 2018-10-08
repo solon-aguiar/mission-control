@@ -8,7 +8,7 @@ module Flight
     alias :finished? :finished
     alias :exploded? :exploded
 
-    def initialize(rocket, planned_distance, sleep_interval=1, explosion_distance=0)
+    def initialize(rocket, planned_distance, sleep_interval = 1, explosion_distance = 0)
       raise ArgumentError.new('Invalid explosion_distance') if explosion_distance > 0 and explosion_distance > planned_distance
       @rocket = rocket
 
@@ -60,6 +60,7 @@ module Flight
     end
 
     private
+
     def calculate_time_left(speed)
       (@planned_distance - @traveled_distance).to_f / Unit.km_per_hour_to_km_per_se(speed)
     end

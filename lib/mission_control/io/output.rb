@@ -1,9 +1,9 @@
 module IO::Output
-  def self.write(s)
-    print s
+  def self.write(str)
+    print str
   end
 
-  def self.write_line(s)
-    puts s
+  def self.write_line(line)
+    puts line
   end
 end

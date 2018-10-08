@@ -1,7 +1,6 @@
 RSpec.describe Mission::Mission do
   let(:rocket) { double('rocket') }
   let(:chaos_monkey) { double('chaos_monkey') }
-
   let(:name) { 'Apollo 13' }
   let(:planned_distance) { 3 }
   let(:speed) { 3_600 }
@@ -12,7 +11,7 @@ RSpec.describe Mission::Mission do
 
   describe 'start_launch_plan!' do
     it 'creates a launch plan' do
-      expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1,-1])
+      expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
 
       mission.start_launch_plan!
 
@@ -23,7 +22,7 @@ RSpec.describe Mission::Mission do
     end
 
     it 'adds the plan to the list of plans for the mission' do
-      expect(chaos_monkey).to receive(:chaos_for_mission).twice.and_return([-1,-1])
+      expect(chaos_monkey).to receive(:chaos_for_mission).twice.and_return([-1, -1])
 
       mission.start_launch_plan!
       mission.start_launch_plan!
@@ -41,7 +40,7 @@ RSpec.describe Mission::Mission do
   describe 'transition_launch_plan_to!' do
     context 'when there is a planned failure' do
       it 'fails on the first stage' do
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([1,-1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([1, -1])
 
         mission.start_launch_plan!
         mission.transition_launch_plan_to!(:proceed)
@@ -53,7 +52,7 @@ RSpec.describe Mission::Mission do
       end
 
       it 'fails on a mid stage' do
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([2,-1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([2, -1])
 
         mission.start_launch_plan!
         mission.transition_launch_plan_to!(:proceed)
@@ -66,7 +65,7 @@ RSpec.describe Mission::Mission do
       end
 
       it 'fails on the last stage' do
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([4,-1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([4, -1])
 
         mission.start_launch_plan!
         mission.transition_launch_plan_to!(:proceed)
@@ -83,7 +82,7 @@ RSpec.describe Mission::Mission do
 
     context 'when there is no planned failure' do
       it 'transitions to the next state' do
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1,-1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
 
         mission.start_launch_plan!
         mission.transition_launch_plan_to!(:proceed)
@@ -94,8 +93,8 @@ RSpec.describe Mission::Mission do
         expect(mission.launch_plan_aborted?).to be(false)
       end
 
-      it 'finishes the launch plan' do
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1,-1])
+      it 'finishes the launch plan' do #TODO mock plan rather than rely on proceed
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
 
         mission.start_launch_plan!
         mission.transition_launch_plan_to!(:proceed)
@@ -114,7 +113,7 @@ RSpec.describe Mission::Mission do
   describe 'launch_rocket!' do
     context 'when not ready' do
       it 'does not do anything' do
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1,-1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
 
         mission.start_launch_plan!
 
@@ -131,7 +130,7 @@ RSpec.describe Mission::Mission do
       it 'fails the flight' do
         expect(Time).to receive(:now).and_return(0, 1, 2)
         expect(rocket).to receive(:calculate_rates_for).exactly(planned_distance - 1).times.and_return(rocket_rates)
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1,2])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, 2])
 
         mission.start_launch_plan!
         mission.transition_launch_plan_to!(:proceed)
@@ -150,7 +149,7 @@ RSpec.describe Mission::Mission do
       it 'completes the flight' do
         expect(Time).to receive(:now).and_return(0, 1, 2, 3)
         expect(rocket).to receive(:calculate_rates_for).exactly(planned_distance).times.and_return(rocket_rates)
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1,-1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
 
         mission.start_launch_plan!
         mission.transition_launch_plan_to!(:proceed)

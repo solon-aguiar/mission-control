@@ -27,7 +27,7 @@ module MissionControl
     end
 
     def all_summaries
-      all_missions.map {|m| m.summary }
+      all_missions.map(&:summary)
     end
   end
 end

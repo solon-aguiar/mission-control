@@ -9,7 +9,7 @@ module Rocket
       speed = @engine.speed_at(elapsed_time)
       burn_rate = (speed.to_f / @engine.avg_speed) * @avg_burn_rate
 
-      return speed, burn_rate
+      [speed, burn_rate]
     end
   end
 end
