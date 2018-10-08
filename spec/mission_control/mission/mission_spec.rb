@@ -7,11 +7,29 @@ RSpec.describe Mission::Mission do
   let(:burn_rate) { 168_240 }
   let(:sleep_interval) { 0 }
   let(:rocket_rates) { [speed, burn_rate] }
+  let(:no_auto_error) { [-1, -1] }
+  let(:one_stage_plan) do
+    second_to_last = Mission::LaunchStage.new(:second_to_last, {
+      'abort': :aborted,
+      'proceed': :completed
+    })
+
+    aborted = Mission::LaunchStage.new(:aborted, {}, true)
+    completed = Mission::LaunchStage.new(:completed, {}, true)
+
+    Mission::LaunchPlan.new(second_to_last, [aborted, completed])
+  end
+  let(:completed_stage_plan) do
+    completed = Mission::LaunchStage.new(:completed, {}, true)
+
+    Mission::LaunchPlan.new(completed, [])
+  end
   let(:mission) { described_class.new(name, planned_distance, rocket, chaos_monkey) }
+
 
   describe 'start_launch_plan!' do
     it 'creates a launch plan' do
-      expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
+      expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return(no_auto_error)
 
       mission.start_launch_plan!
 
@@ -22,7 +40,7 @@ RSpec.describe Mission::Mission do
     end
 
     it 'adds the plan to the list of plans for the mission' do
-      expect(chaos_monkey).to receive(:chaos_for_mission).twice.and_return([-1, -1])
+      expect(chaos_monkey).to receive(:chaos_for_mission).twice.and_return(no_auto_error)
 
       mission.start_launch_plan!
       mission.start_launch_plan!
@@ -82,7 +100,7 @@ RSpec.describe Mission::Mission do
 
     context 'when there is no planned failure' do
       it 'transitions to the next state' do
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return(no_auto_error)
 
         mission.start_launch_plan!
         mission.transition_launch_plan_to!(:proceed)
@@ -93,13 +111,11 @@ RSpec.describe Mission::Mission do
         expect(mission.launch_plan_aborted?).to be(false)
       end
 
-      it 'finishes the launch plan' do #TODO mock plan rather than rely on proceed
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
+      it 'finishes the launch plan' do
+        allow(LaunchPlanFactory).to receive(:build_launch_plan).once.and_return(one_stage_plan)
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return(no_auto_error)
 
         mission.start_launch_plan!
-        mission.transition_launch_plan_to!(:proceed)
-        mission.transition_launch_plan_to!(:proceed)
-        mission.transition_launch_plan_to!(:proceed)
         mission.transition_launch_plan_to!(:proceed)
 
         expect(mission.launch_plan_transitions).to eq([])
@@ -113,10 +129,9 @@ RSpec.describe Mission::Mission do
   describe 'launch_rocket!' do
     context 'when not ready' do
       it 'does not do anything' do
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return(no_auto_error)
 
         mission.start_launch_plan!
-
         mission.launch_rocket!(sleep_interval)
 
         expect(mission.launch_plan_transitions).to eq([:abort, :proceed])
@@ -128,16 +143,13 @@ RSpec.describe Mission::Mission do
 
     context 'when there is a planned explosion' do
       it 'fails the flight' do
+        allow(LaunchPlanFactory).to receive(:build_launch_plan).once.and_return(completed_stage_plan)
+
         expect(Time).to receive(:now).and_return(0, 1, 2)
         expect(rocket).to receive(:calculate_rates_for).exactly(planned_distance - 1).times.and_return(rocket_rates)
         expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, 2])
 
         mission.start_launch_plan!
-        mission.transition_launch_plan_to!(:proceed)
-        mission.transition_launch_plan_to!(:proceed)
-        mission.transition_launch_plan_to!(:proceed)
-        mission.transition_launch_plan_to!(:proceed)
-
         mission.launch_rocket!(sleep_interval)
 
         expect(mission.flight_successful?).to be(false)
@@ -147,16 +159,13 @@ RSpec.describe Mission::Mission do
 
     context 'when there is no planned explosion' do
       it 'completes the flight' do
+        allow(LaunchPlanFactory).to receive(:build_launch_plan).once.and_return(completed_stage_plan)
+
         expect(Time).to receive(:now).and_return(0, 1, 2, 3)
         expect(rocket).to receive(:calculate_rates_for).exactly(planned_distance).times.and_return(rocket_rates)
-        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return([-1, -1])
+        expect(chaos_monkey).to receive(:chaos_for_mission).once.and_return(no_auto_error)
 
         mission.start_launch_plan!
-        mission.transition_launch_plan_to!(:proceed)
-        mission.transition_launch_plan_to!(:proceed)
-        mission.transition_launch_plan_to!(:proceed)
-        mission.transition_launch_plan_to!(:proceed)
-
         mission.launch_rocket!(sleep_interval)
 
         expect(mission.flight_successful?).to be(true)
