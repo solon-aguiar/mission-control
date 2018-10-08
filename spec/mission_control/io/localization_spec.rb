@@ -16,7 +16,7 @@ RSpec.describe Localization do
       it 'returns args applied to string' do
         localization = described_class.new(locale)
 
-        localized_string = localization.get_localized_string(valid_rich_key, "30")
+        localized_string = localization.get_localized_string(valid_rich_key, '30')
         expect(localized_string).to eq('Travel distance: 30 km')
       end
 
@@ -78,8 +78,8 @@ RSpec.describe Localization do
       localization = described_class.new(locale)
 
       expect(localization.format_time(0)).to eq('0:00:00')
-      expect(localization.format_time(1000)).to eq('0:00:01')
-      expect(localization.format_time(1_0000)).to eq('0:00:10')
+      expect(localization.format_time(1_000)).to eq('0:00:01')
+      expect(localization.format_time(10_000)).to eq('0:00:10')
       expect(localization.format_time(60_000)).to eq('0:01:00')
       expect(localization.format_time(600_000)).to eq('0:10:00')
       expect(localization.format_time(3_600_000)).to eq('1:00:00')

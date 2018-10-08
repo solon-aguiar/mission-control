@@ -58,14 +58,14 @@ RSpec.describe Flight::Flight do
     context 'when the flight explodes' do
       it 'calculates the summary' do
         expect(Time).to receive(:now).and_return(0, 1, 2)
-          expect(rocket).to receive(:calculate_rates_for).exactly(desired_distance - 1).times.and_return(rocket_rates)
-          flight = described_class.new(rocket, desired_distance, sleep_interval, desired_distance - 1)
+        expect(rocket).to receive(:calculate_rates_for).exactly(desired_distance - 1).times.and_return(rocket_rates)
+        flight = described_class.new(rocket, desired_distance, sleep_interval, desired_distance - 1)
 
-          flight.launch!
+        flight.launch!
 
-          expect(flight.summary.travelled_distance).to be(desired_distance - 1)
-          expect(flight.summary.total_time).to be(2000.0)
-          expect(flight.summary.fuel_burnt).to be(burn_rate.to_f/60 * 2)
+        expect(flight.summary.travelled_distance).to be(desired_distance - 1)
+        expect(flight.summary.total_time).to be(2000.0)
+        expect(flight.summary.fuel_burnt).to be(burn_rate.to_f/60 * 2)
       end
     end
 
