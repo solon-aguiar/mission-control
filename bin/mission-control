@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'mission_control'
+
+MissionControl::Game.new.play

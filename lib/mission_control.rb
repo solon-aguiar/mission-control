@@ -7,10 +7,10 @@ require_relative 'mission_control/mission/mission'
 
 require_relative 'mission_control/rocket/rocket'
 require_relative 'mission_control/rocket/engine'
-
-# Basic class
-class MissionControl
-  def play
-    'game on!'
-  end
-end
+require_relative 'mission_control/control_panel'
+require_relative 'mission_control/io/input'
+require_relative 'mission_control/io/output'
+require_relative 'mission_control/io/localization'
+require_relative 'mission_control/reporter'
+require_relative 'mission_control/game'
+require_relative 'mission_control/unit'
