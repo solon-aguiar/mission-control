@@ -58,6 +58,7 @@ RSpec.describe Localization do
       expect(localization.format_integer(1_000)).to eq('1,000')
       expect(localization.format_integer(151_416)).to eq('151,416')
       expect(localization.format_integer(1_350)).to eq('1,350')
+      expect(localization.format_integer(1_350_123_123_123_123_123)).to eq('1,350,123,123,123,123,123')
     end
   end
 
