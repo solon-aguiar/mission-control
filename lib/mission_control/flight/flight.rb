@@ -9,7 +9,7 @@ module Flight
     alias :exploded? :exploded
 
     def initialize(rocket, planned_distance, sleep_interval = 1, explosion_distance = 0)
-      raise ArgumentError.new('Invalid explosion_distance') if explosion_distance > 0 and explosion_distance > planned_distance
+      raise ArgumentError.new('Invalid explosion_distance') if explosion_distance > 0 && explosion_distance > planned_distance
       @rocket = rocket
 
       @planned_distance = planned_distance
@@ -66,7 +66,7 @@ module Flight
     end
 
     def should_explode
-      @explosion_distance > 0 and @traveled_distance >= @explosion_distance
+      @explosion_distance > 0 && @traveled_distance >= @explosion_distance
     end
   end
 end

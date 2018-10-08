@@ -10,12 +10,12 @@ module Flight
       @time_to_go = time_to_go
     end
 
-    def ==(other_obj)
-      other_obj.speed == @speed and
-      other_obj.burn_rate == @burn_rate and
-      other_obj.traveled_distance == @traveled_distance and
-      other_obj.elapsed_time == @elapsed_time and
-      (other_obj.time_to_go - @time_to_go).abs <= 0.0001
+    def ==(other)
+      other.speed == @speed &&
+      other.burn_rate == @burn_rate &&
+      other.traveled_distance == @traveled_distance &&
+      other.elapsed_time == @elapsed_time &&
+      (other.time_to_go - @time_to_go).abs <= 0.0001
     end
   end
 end

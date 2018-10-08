@@ -152,7 +152,7 @@ class Reporter
   end
 
   def calculate_total_explosions(all_summaries)
-     all_summaries.inject(0) do |sum, next_summary|
+    all_summaries.inject(0) do |sum, next_summary|
       sum + (next_summary.flight.nil? ? 0 : next_summary.flight.exploded? ? 1 : 0)
     end
   end

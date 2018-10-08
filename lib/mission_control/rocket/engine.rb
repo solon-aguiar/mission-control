@@ -1,6 +1,7 @@
 module Rocket
   class Engine
     attr_reader :avg_speed
+    SPEED_FACTOR = 10
 
     def initialize(avg_speed, random_generator, stddev = 100)
       @rand_helper = random_generator
@@ -39,13 +40,13 @@ module Rocket
       [x, y]
     end
 
-    #Based on quadractic acceleration
+    # Based on quadractic acceleration
     def time_for_reaching_average
-      (Math.sqrt(@avg_speed) / 10).round
+      (Math.sqrt(@avg_speed) / SPEED_FACTOR).round
     end
 
     def acceleration_speed_at(elapsed_time)
-      (elapsed_time * 10)**2
+      (elapsed_time * SPEED_FACTOR)**2
     end
   end
 end

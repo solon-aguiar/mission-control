@@ -1,5 +1,5 @@
 class Localization
-  @@TRANSLATIONS = {
+  TRANSLATIONS = {
     :en_US => {
       # greetings
       :welcome => 'Welcome to Mission Control!',
@@ -64,7 +64,7 @@ class Localization
   end
 
   def get_localized_string(key, *args)
-    lang = @@TRANSLATIONS.has_key?(@locale) ? @@TRANSLATIONS[@locale] : @@TRANSLATIONS[@default_locale]
+    lang = TRANSLATIONS.has_key?(@locale) ? TRANSLATIONS[@locale] : TRANSLATIONS[@default_locale]
     return nil unless lang
 
     lang.has_key?(key) ? lang[key] % args : nil
@@ -79,10 +79,10 @@ class Localization
   end
 
   def format_time(milliseconds)
-    secs, milisecs = milliseconds.divmod(1000)
+    secs, _ = milliseconds.divmod(1000)
     mins, secs = secs.divmod(60)
     hours, mins = mins.divmod(60)
 
-    "#{hours}:#{[mins,secs].map { |e| e.to_s.rjust(2, '0') }.join(':')}"
+    "#{hours}:#{[mins, secs].map { |e| e.to_s.rjust(2, '0') }.join(':')}"
   end
 end
