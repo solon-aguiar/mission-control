@@ -1,8 +1,8 @@
 RSpec.describe Reporter do
   let(:localization) { Localization.new(:en_US) }
   let(:seed) { 12 }
-  let(:thirty_seconds) { 30 * 1000}
-  let(:five_minutes_forty_seconds) { 5 * 60 * 1000 + 40 * 1000}
+  let(:thirty_seconds) { 30 * 1000 }
+  let(:five_minutes_forty_seconds) { 5 * 60 * 1000 + 40 * 1000 }
 
   describe 'build_mission_plan' do
     it 'justifies the text correctly' do
@@ -52,7 +52,7 @@ RSpec.describe Reporter do
       reporter = described_class.new(localization)
       summary_string = reporter.build_missions_summary([summary])
       expect(summary_string).to eq(
-        %{Mission summary:
+        %{All missions summary:
   Total distance traveled: 160.00 km
   Number of abort and retries: 2/2
   Number of explosions: 0
@@ -68,7 +68,7 @@ RSpec.describe Reporter do
       reporter = described_class.new(localization)
       summary_string = reporter.build_missions_summary([summary])
       expect(summary_string).to eq(
-        %{Mission summary:
+        %{All missions summary:
   Total distance traveled: 100.00 km
   Number of abort and retries: 2/2
   Number of explosions: 1
@@ -85,7 +85,7 @@ RSpec.describe Reporter do
       reporter = described_class.new(localization)
       summary_string = reporter.build_missions_summary([summary, another_summary])
       expect(summary_string).to eq(
-        %{Mission summary:
+        %{All missions summary:
   Total distance traveled: 260.00 km
   Number of abort and retries: 2/2
   Number of explosions: 1
@@ -103,12 +103,53 @@ RSpec.describe Reporter do
       reporter = described_class.new(localization)
       summary_string = reporter.build_missions_summary([summary, another_summary, a_third_summary])
       expect(summary_string).to eq(
-        %{Mission summary:
+        %{All missions summary:
   Total distance traveled: 260.00 km
   Number of abort and retries: 3/2
   Number of explosions: 1
   Total fuel burned: 10,003,500 liters
   Flight time: 0:06:10
+}
+      )
+    end
+  end
+
+  describe 'build_mission_summary' do
+    let(:complete_launch_plan) { double('complete_launch_plan', :aborted? => false) }
+    let(:incomplete_launch_plan) { double('complete_launch_plan', :aborted? => true) }
+    let(:complete_flight_summary) { Flight::Summary.new(160, 10_000_000.01, five_minutes_forty_seconds) }
+    let(:incomplete_flight_summary) { Flight::Summary.new(100, 3_500, thirty_seconds) }
+    let(:complete_flight) { double('complete_flight', :exploded? => false, :summary => complete_flight_summary) }
+    let(:incomplete_flight) { double('incomplete_flight', :exploded? => true, :summary => incomplete_flight_summary) }
+
+    it 'accounts correctly for aborts and retries' do
+      summary = Mission::Summary.new([incomplete_launch_plan, incomplete_launch_plan, complete_launch_plan], complete_flight)
+
+      reporter = described_class.new(localization)
+      summary_string = reporter.build_mission_summary(summary)
+      expect(summary_string).to eq(
+        %{Mission summary:
+  Total distance traveled: 160.00 km
+  Number of abort and retries: 2/2
+  Number of explosions: 0
+  Total fuel burned: 10,000,000 liters
+  Flight time: 0:05:40
+}
+      )
+    end
+
+    it 'accounts correctly for explosions' do
+      summary = Mission::Summary.new([incomplete_launch_plan, incomplete_launch_plan, complete_launch_plan], incomplete_flight)
+
+      reporter = described_class.new(localization)
+      summary_string = reporter.build_mission_summary(summary)
+      expect(summary_string).to eq(
+        %{Mission summary:
+  Total distance traveled: 100.00 km
+  Number of abort and retries: 2/2
+  Number of explosions: 1
+  Total fuel burned: 3,500 liters
+  Flight time: 0:00:30
 }
       )
     end

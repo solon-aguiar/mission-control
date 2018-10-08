@@ -47,8 +47,8 @@ class Reporter
     create_multiline(title, travel_distance, capacity, fuel_capacity, burn_rate, average_speed, seed)
   end
 
-  def build_missions_summary(all_summaries)
-    title = @localization.get_localized_string(:mission_summary)
+  def build_missions_summary(all_summaries, title_sym = :missions_summary)
+    title = @localization.get_localized_string(title_sym)
     total_distance_val = @localization.format_float(calculate_total(all_summaries, :travelled_distance), 2)
     total_distance = @localization.get_localized_string(
       :total_distance,
@@ -80,6 +80,10 @@ class Reporter
     )
 
     create_multiline(title, total_distance, retries_abort_no, no_explosions, total_fuel_burnt, flight_time)
+  end
+
+  def build_mission_summary(mission_summary)
+    build_missions_summary([mission_summary], :mission_summary)
   end
 
   def build_mission_status(flight_status)
@@ -119,8 +123,9 @@ class Reporter
   end
 
   private
+
   def create_multiline(*args)
-    tail = args[1..-1].map {|e| "  #{e}\n"}.join('')
+    tail = args[1..-1].map { |e| "  #{e}\n" }.join('')
     head = "#{args[0]}\n"
 
     "#{head}#{tail}"
